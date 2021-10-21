@@ -5,6 +5,7 @@
 .cache
 /lib
 /dist/*
+!/dist/version.txt
 /scratch
 node_modules
 /config/repl
