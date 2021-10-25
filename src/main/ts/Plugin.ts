@@ -47,11 +47,11 @@ const setup = (editor: Editor): void => {
     div.innerHTML = e.content;
     const elements = div.querySelectorAll('.' + mathjaxClassName);
     for (let i = 0; i < elements.length; i++) {
-      let children = elements[i].querySelectorAll('span');
+      const children = elements[i].querySelectorAll('span');
       for (let j = 0; j < children.length; j++) {
         children[j].remove();
       }
-      let latex = elements[i].getAttribute('data-latex');
+      const latex = elements[i].getAttribute('data-latex');
       elements[i].removeAttribute('contenteditable');
       elements[i].removeAttribute('style');
       elements[i].removeAttribute('data-latex');
