@@ -7,11 +7,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="../../../node_modules/tinymce/tinymce.js"></script>
   <script src="../../../scratch/compiled/demo.js"></script>
+
 </head>
 <body>
-
+  <p>$$\imaginary$$</p>
+  <p>$$\exponential$$</p>
+  <p>$$\sqrt{a}$$</p>
+  <p><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>e</mo></math></p>
   <textarea class="tinymce">
-    <p>$$\frac{\pi}{2}$$</p>
+
   </textarea>
+  <script>
+    MathJax = {
+      loader: {load: ['[tex]/physics']},
+      tex: {packages: {'[+]': ['physics']}}
+    }
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js">
+  </script>
 </body>
 </html>
