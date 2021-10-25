@@ -41,6 +41,25 @@ const setup = (editor: Editor): void => {
       element.appendChild(dummy);
     }
   }
+
+  editor.on('GetContent', function (e) {
+    const div = editor.dom.create('div');
+    div.innerHTML = e.content;
+    const elements = div.querySelectorAll('.' + mathjaxClassName);
+    for (let i = 0; i < elements.length; i++) {
+      let children = elements[i].querySelectorAll('span');
+      for (let j = 0; j < children.length; j++) {
+        children[j].remove();
+      }
+      let latex = elements[i].getAttribute('data-latex');
+      elements[i].removeAttribute('contenteditable');
+      elements[i].removeAttribute('style');
+      elements[i].removeAttribute('data-latex');
+      elements[i].innerHTML = latex;
+    }
+    e.content = div.innerHTML;
+  })
+
   editor.on("click", function (e) {
     const closest = e.target.closest('.' + mathjaxClassName);
     if (closest) {
@@ -73,7 +92,7 @@ const setup = (editor: Editor): void => {
   })
 
   editor.on('SetContent', () => {
-    if (editor.getDoc().defaultView.MathJax && editor.getDoc().defaultView.MathJax.startup) {
+    if (editor.getDoc().defaultView.MathJax && editor.getDoc().defaultView.MathJax?.startup) {
       editor.getDoc().defaultView.MathJax.startup.getComponents()
       editor.getDoc().defaultView.MathJax.typeset()
     }
