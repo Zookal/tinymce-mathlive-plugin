@@ -42,7 +42,7 @@ const setup = (editor: Editor): void => {
     }
   }
   editor.on("click", function (e) {
-    let closest = e.target.closest('.' + mathjaxClassName);
+    const closest = e.target.closest('.' + mathjaxClassName);
     if (closest) {
       editor.execCommand('open', closest)
     }
