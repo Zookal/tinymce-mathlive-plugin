@@ -1,6 +1,6 @@
 import { Editor, TinyMCE } from 'tinymce';
 import 'mathlive'
-// import { MathfieldElement, renderMathInDocument, renderMathInElement, convertLatexToMathMl, convertLatexToMarkup } from 'mathlive'
+import {MathfieldElement} from "mathlive";
 const style = `
   .tox .tox-dialog, .tox .tox-dialog__body-content {
     overflow: visible
@@ -14,9 +14,9 @@ declare const tinymce: TinyMCE;
 const ID = 'formula'
 const mathjaxClassName = 'math-tex'
 const mathjaxTempClassName = mathjaxClassName + '-original'
-
+const mathjaxSymbols = {start: '\\(', end: '\\)'}
 const getMathText = (value) => {
-  return `$$${value}$$`
+  return `${mathjaxSymbols.start} ${value} ${mathjaxSymbols.end}`
 }
 
 const setup = (editor: Editor): void => {
@@ -41,6 +41,12 @@ const setup = (editor: Editor): void => {
       element.appendChild(dummy);
     }
   }
+  editor.on("click", function (e) {
+    let closest = e.target.closest('.' + mathjaxClassName);
+    if (closest) {
+      editor.execCommand('open', closest)
+    }
+  });
 
   editor.on('init', () => {
     const configScript = editor.dom.create('script', {
@@ -67,7 +73,7 @@ const setup = (editor: Editor): void => {
   })
 
   editor.on('SetContent', () => {
-    if (editor.getDoc().defaultView.MathJax) {
+    if (editor.getDoc().defaultView.MathJax && editor.getDoc().defaultView.MathJax.startup) {
       editor.getDoc().defaultView.MathJax.startup.getComponents()
       editor.getDoc().defaultView.MathJax.typeset()
     }
@@ -97,9 +103,11 @@ const setup = (editor: Editor): void => {
     checkElement(content)
 
     editor.insertContent(content.outerHTML)
+    editor.getDoc().defaultView.MathJax.startup.getComponents()
+    editor.getDoc().defaultView.MathJax.typeset()
   })
 
-  editor.addCommand('open', () => {
+  editor.addCommand('open', (target) => {
     editor.windowManager.open({
       title: 'Enter your math expression',
       body: {
@@ -127,6 +135,15 @@ const setup = (editor: Editor): void => {
         editor.windowManager.close()
       },
     })
+    if (target) {
+      let latex = ''
+      const latexAttribute = target.getAttribute('data-latex')
+      if (latexAttribute.length >= (mathjaxSymbols.start + mathjaxSymbols.end).length) {
+        latex = latexAttribute.substr(mathjaxSymbols.start.length, latexAttribute.length - (mathjaxSymbols.start + mathjaxSymbols.end).length);
+      }
+      const mf = document.getElementById(ID) as MathfieldElement
+      mf.value = latex
+    }
   })
 
 
